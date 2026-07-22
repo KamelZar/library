@@ -1,0 +1,15 @@
+services:
+  libraryapp:
+    build: .
+    image: libraryapp:latest
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    volumes:
+      - libraryapp-data:/data
+
+volumes:
+  libraryapp-data:

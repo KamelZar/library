@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion — Ma ludothèque Blu-ray</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<h1>Ma ludothèque Blu-ray</h1>
+<form class="login-form" method="post" action="/login" id="login-form">
+    <p class="error" id="error-message" hidden>Identifiants incorrects.</p>
+    <p id="logout-message" hidden>Vous avez été déconnecté.</p>
+
+    <label for="username">Utilisateur</label>
+    <input type="text" id="username" name="username" autocomplete="username" required>
+
+    <label for="password">Mot de passe</label>
+    <input type="password" id="password" name="password" autocomplete="current-password" required>
+
+    <input type="hidden" name="_csrf" id="csrf-token">
+
+    <button type="submit">Se connecter</button>
+</form>
+
+<script>
+    function readCookie(name) {
+        const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+    }
+
+    document.getElementById('csrf-token').value = readCookie('XSRF-TOKEN') || '';
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('error')) {
+        document.getElementById('error-message').hidden = false;
+    }
+    if (params.has('logout')) {
+        document.getElementById('logout-message').hidden = false;
+    }
+</script>
+</body>
+</html>

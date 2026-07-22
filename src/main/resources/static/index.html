@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ma vidéothèque</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="marquee">
+    <div class="top-bar">
+        <div>
+            <p class="eyebrow">Collection privée</p>
+            <h1>🎬 Ma vidéothèque</h1>
+        </div>
+        <form method="post" action="/logout">
+            <input type="hidden" name="_csrf" id="logout-csrf-token">
+            <button type="submit" class="secondary">Déconnexion</button>
+        </form>
+    </div>
+</div>
+
+<main>
+    <nav class="view-toggle">
+        <button type="button" class="view-toggle-btn" id="browse-tab">📚 Inspecter ma bibliothèque</button>
+        <button type="button" class="view-toggle-btn" id="enrich-tab">➕ Enrichir ma bibliothèque</button>
+    </nav>
+
+    <p id="status-message"></p>
+
+    <section id="browse-view">
+        <div class="filter-bar">
+            <input type="text" id="search-input" placeholder="Rechercher un titre...">
+            <select id="type-filter">
+                <option value="">Tous les types</option>
+                <option value="FILM">Film</option>
+                <option value="DOCUMENTAIRE">Documentaire</option>
+                <option value="SERIE">Série</option>
+            </select>
+            <select id="genre-filter">
+                <option value="">Tous les genres</option>
+                <option value="COMEDIE">Comédie</option>
+                <option value="DRAME">Drame</option>
+                <option value="ACTION">Action</option>
+                <option value="AVENTURE">Aventure</option>
+                <option value="HORREUR">Horreur</option>
+                <option value="THRILLER">Thriller</option>
+                <option value="SCIENCE_FICTION">Science-fiction</option>
+                <option value="FANTASTIQUE">Fantastique</option>
+                <option value="ROMANCE">Romance</option>
+                <option value="ANIMATION">Animation</option>
+                <option value="POLICIER">Policier</option>
+                <option value="GUERRE">Guerre</option>
+                <option value="HISTORIQUE">Historique</option>
+                <option value="ANIMALIER">Animalier</option>
+                <option value="MUSICAL">Musical</option>
+            </select>
+        </div>
+        <div class="library-panel" id="movie-list"></div>
+    </section>
+
+    <section id="enrich-view" hidden>
+        <form class="add-form" id="add-form">
+            <input type="text" id="title-input" placeholder="Titre du film" required>
+            <input type="text" id="barcode-input" placeholder="Code-barre" required>
+            <select id="type-input" required>
+                <option value="" disabled selected>Type</option>
+                <option value="FILM">Film</option>
+                <option value="DOCUMENTAIRE">Documentaire</option>
+                <option value="SERIE">Série</option>
+            </select>
+            <select id="genre-input" required>
+                <option value="" disabled selected>Genre</option>
+                <option value="COMEDIE">Comédie</option>
+                <option value="DRAME">Drame</option>
+                <option value="ACTION">Action</option>
+                <option value="AVENTURE">Aventure</option>
+                <option value="HORREUR">Horreur</option>
+                <option value="THRILLER">Thriller</option>
+                <option value="SCIENCE_FICTION">Science-fiction</option>
+                <option value="FANTASTIQUE">Fantastique</option>
+                <option value="ROMANCE">Romance</option>
+                <option value="ANIMATION">Animation</option>
+                <option value="POLICIER">Policier</option>
+                <option value="GUERRE">Guerre</option>
+                <option value="HISTORIQUE">Historique</option>
+                <option value="ANIMALIER">Animalier</option>
+                <option value="MUSICAL">Musical</option>
+            </select>
+            <input type="number" id="year-input" placeholder="Année" min="1888" max="2100" required>
+            <input type="text" id="actors-input" placeholder="Acteurs (optionnel, séparés par des virgules)">
+            <button type="submit">+ Ajouter à l'étagère</button>
+        </form>
+    </section>
+</main>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

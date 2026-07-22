@@ -1,0 +1,325 @@
+:root {
+    --bg: #14100d;
+    --panel: rgba(28, 22, 18, 0.82);
+    --gold: #d99a45;
+    --gold-bright: #f0b968;
+    --burgundy: #7a2e3a;
+    --mustard: #c58a3a;
+    --text: #f1e9df;
+    --text-muted: #bfae9c;
+    --border: #4a3b30;
+    --danger: #d9576b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    margin: 0;
+    color: var(--text);
+    background:
+        linear-gradient(180deg, rgba(10, 7, 5, 0.55), rgba(10, 7, 5, 0.85)),
+        url('/img/background.jpg') center / cover no-repeat fixed;
+    background-color: var(--bg);
+    min-height: 100vh;
+    line-height: 1.4;
+}
+
+/* --- Écran de connexion --- */
+
+.login-form {
+    max-width: 320px;
+    margin: 4rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 2rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.login-form label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+body:has(.login-form) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body:has(.login-form) h1 {
+    text-align: center;
+}
+
+/* --- Marquee / en-tête --- */
+
+.marquee {
+    background: linear-gradient(180deg, rgba(12, 9, 7, 0.75), rgba(12, 9, 7, 0.55));
+    backdrop-filter: blur(6px);
+    border-bottom: 3px solid var(--gold);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.top-bar {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.eyebrow {
+    margin: 0 0 0.15rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.9rem;
+    letter-spacing: 0.03em;
+    color: var(--gold-bright);
+    text-shadow: 0 0 18px rgba(244, 200, 102, 0.35);
+}
+
+main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+/* --- Formulaires / boutons --- */
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select {
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 100%;
+    background: var(--panel);
+    color: var(--text);
+}
+
+input::placeholder {
+    color: var(--text-muted);
+}
+
+select {
+    accent-color: var(--gold);
+}
+
+button {
+    padding: 0.55rem 1.1rem;
+    border: none;
+    border-radius: 6px;
+    background: var(--gold);
+    color: #241d0d;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.15s ease;
+}
+
+button:hover {
+    background: var(--gold-bright);
+    transform: translateY(-1px);
+}
+
+button.secondary {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+button.secondary:hover {
+    color: var(--text);
+    border-color: var(--text-muted);
+    background: transparent;
+}
+
+.error {
+    color: var(--danger);
+    font-size: 0.9rem;
+}
+
+.add-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem;
+}
+
+.add-form input[type="text"],
+.add-form select {
+    flex: 1;
+    min-width: 160px;
+}
+
+.add-form input[type="number"] {
+    flex: 0 1 100px;
+    min-width: 90px;
+}
+
+#status-message {
+    min-height: 1.2rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* --- Navigation entre vues --- */
+
+.view-toggle {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+}
+
+.view-toggle-btn {
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    flex: 1;
+}
+
+.view-toggle-btn:hover {
+    background: var(--panel);
+    color: var(--text);
+}
+
+.view-toggle-btn.active {
+    background: var(--gold);
+    color: #241d0d;
+    border-color: var(--gold);
+}
+
+/* --- Vue "Inspecter" --- */
+
+.filter-bar {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-bar input[type="text"] {
+    flex: 2;
+    min-width: 180px;
+}
+
+.filter-bar select {
+    flex: 1;
+    min-width: 150px;
+}
+
+.library-panel {
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 3rem 1rem;
+}
+
+.movie-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.movie-row:last-child {
+    border-bottom: none;
+}
+
+.movie-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.movie-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.movie-title {
+    color: var(--text);
+    overflow-wrap: break-word;
+}
+
+.movie-barcode {
+    font-family: "SF Mono", ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+}
+
+.movie-meta {
+    font-size: 0.8rem;
+    color: var(--gold-bright);
+}
+
+.movie-actors {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.watched-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.watched-toggle input {
+    accent-color: var(--gold);
+}
+
+.row-delete {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.5rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.row-delete:hover {
+    background: var(--danger);
+    color: white;
+    border-color: var(--danger);
+}
+
+.movie-row.watched .movie-title {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
