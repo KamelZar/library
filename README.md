@@ -19,6 +19,21 @@ Puis ouvrir http://localhost:8080/login.html.
 
 Sans variables d'environnement définies, les identifiants par défaut sont `admin` / `changeme` (**à changer avant tout déploiement**, voir `application.yml`).
 
+## Import initial d'une collection existante
+
+`src/main/resources/import/collection.csv` (title;year;type) alimente un import unique au démarrage :
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=import
+```
+
+Le script (`CollectionImportRunner`) ne s'exécute que si la base est vide et n'insère rien si des films existent déjà (relance sans risque de doublon). Chaque film importé reçoit :
+- un **code-barre temporaire** `IMPORT-XXXX` (à remplacer par le vrai code-barre quand tu scannes le Blu-ray),
+- le **genre "Non classé"** (le type Film/Documentaire/Série est lui déduit automatiquement du titre, avec un peu d'aide),
+- **acteurs vides**.
+
+Utilise le bouton ✎ dans la vue "Inspecter" pour corriger ces champs film par film au fil de l'eau.
+
 ## Lancer les tests
 
 ```bash

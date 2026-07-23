@@ -304,6 +304,7 @@ button.secondary:hover {
     accent-color: var(--gold);
 }
 
+.row-edit,
 .row-delete {
     background: transparent;
     color: var(--text-muted);
@@ -311,6 +312,12 @@ button.secondary:hover {
     padding: 0.15rem 0.5rem;
     font-size: 0.85rem;
     line-height: 1.4;
+}
+
+.row-edit:hover {
+    background: var(--gold);
+    color: #241d0d;
+    border-color: var(--gold);
 }
 
 .row-delete:hover {
@@ -322,4 +329,18 @@ button.secondary:hover {
 .movie-row.watched .movie-title {
     text-decoration: line-through;
     opacity: 0.6;
+}
+
+.movie-row-edit {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background: rgba(217, 154, 69, 0.08);
+}
+
+.movie-row-edit input[type="text"],
+.movie-row-edit input[type="number"],
+.movie-row-edit select {
+    width: auto;
+    flex: 1;
+    min-width: 110px;
 }

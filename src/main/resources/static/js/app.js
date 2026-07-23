@@ -11,12 +11,25 @@ document.getElementById('logout-csrf-token').value = readCookie('XSRF-TOKEN') ||
 
 const TYPE_LABELS = { FILM: 'Film', DOCUMENTAIRE: 'Documentaire', SERIE: 'Série' };
 const GENRE_LABELS = {
+    NON_CLASSE: 'Non classé',
     COMEDIE: 'Comédie', DRAME: 'Drame', ACTION: 'Action', AVENTURE: 'Aventure',
     HORREUR: 'Horreur', THRILLER: 'Thriller', SCIENCE_FICTION: 'Science-fiction',
     FANTASTIQUE: 'Fantastique', ROMANCE: 'Romance', ANIMATION: 'Animation',
     POLICIER: 'Policier', GUERRE: 'Guerre', HISTORIQUE: 'Historique',
     ANIMALIER: 'Animalier', MUSICAL: 'Musical'
 };
+
+function buildOptions(labels, selectedValue) {
+    const fragment = document.createDocumentFragment();
+    for (const [value, label] of Object.entries(labels)) {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = label;
+        option.selected = value === selectedValue;
+        fragment.appendChild(option);
+    }
+    return fragment;
+}
 
 const movieList = document.getElementById('movie-list');
 const statusMessage = document.getElementById('status-message');
@@ -58,7 +71,128 @@ function showView(view) {
 browseTab.addEventListener('click', () => showView('browse'));
 enrichTab.addEventListener('click', () => showView('enrich'));
 
+let lastMovies = [];
+let editingId = null;
+
+function buildDisplayRow(movie) {
+    const row = document.createElement('div');
+    row.className = 'movie-row' + (movie.watched ? ' watched' : '');
+
+    const info = document.createElement('div');
+    info.className = 'movie-info';
+
+    const title = document.createElement('span');
+    title.className = 'movie-title';
+    title.textContent = movie.title;
+
+    const meta = document.createElement('span');
+    meta.className = 'movie-meta';
+    const metaParts = [TYPE_LABELS[movie.type] || movie.type, GENRE_LABELS[movie.genre] || movie.genre, movie.year];
+    meta.textContent = metaParts.join(' · ');
+
+    const barcode = document.createElement('span');
+    barcode.className = 'movie-barcode';
+    barcode.textContent = movie.barcode;
+
+    info.append(title, meta, barcode);
+
+    if (movie.actors && movie.actors.length > 0) {
+        const actors = document.createElement('span');
+        actors.className = 'movie-actors';
+        actors.textContent = 'Avec ' + movie.actors.join(', ');
+        info.appendChild(actors);
+    }
+
+    const watchedLabel = document.createElement('label');
+    watchedLabel.className = 'watched-toggle';
+    const watchedCheckbox = document.createElement('input');
+    watchedCheckbox.type = 'checkbox';
+    watchedCheckbox.checked = movie.watched;
+    watchedCheckbox.addEventListener('change', () => toggleWatched(movie, watchedCheckbox.checked));
+    const watchedText = document.createElement('span');
+    watchedText.textContent = 'Vu';
+    watchedLabel.append(watchedCheckbox, watchedText);
+
+    const editButton = document.createElement('button');
+    editButton.type = 'button';
+    editButton.className = 'row-edit';
+    editButton.setAttribute('aria-label', `Éditer ${movie.title}`);
+    editButton.textContent = '✎';
+    editButton.addEventListener('click', () => {
+        editingId = movie.id;
+        renderMovies(lastMovies);
+    });
+
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'row-delete';
+    deleteButton.setAttribute('aria-label', `Supprimer ${movie.title}`);
+    deleteButton.textContent = '✕';
+    deleteButton.addEventListener('click', () => deleteMovie(movie));
+
+    row.append(info, watchedLabel, editButton, deleteButton);
+    return row;
+}
+
+function buildEditRow(movie) {
+    const row = document.createElement('div');
+    row.className = 'movie-row movie-row-edit';
+
+    const titleField = document.createElement('input');
+    titleField.type = 'text';
+    titleField.value = movie.title;
+    titleField.placeholder = 'Titre';
+
+    const barcodeField = document.createElement('input');
+    barcodeField.type = 'text';
+    barcodeField.value = movie.barcode;
+    barcodeField.placeholder = 'Code-barre';
+
+    const typeField = document.createElement('select');
+    typeField.appendChild(buildOptions(TYPE_LABELS, movie.type));
+
+    const genreField = document.createElement('select');
+    genreField.appendChild(buildOptions(GENRE_LABELS, movie.genre));
+
+    const yearField = document.createElement('input');
+    yearField.type = 'number';
+    yearField.min = '1888';
+    yearField.max = '2100';
+    yearField.value = movie.year;
+
+    const actorsField = document.createElement('input');
+    actorsField.type = 'text';
+    actorsField.placeholder = 'Acteurs (séparés par des virgules)';
+    actorsField.value = (movie.actors || []).join(', ');
+
+    const saveButton = document.createElement('button');
+    saveButton.type = 'button';
+    saveButton.textContent = 'Enregistrer';
+    saveButton.addEventListener('click', () => saveEdit(movie.id, {
+        title: titleField.value,
+        barcode: barcodeField.value,
+        watched: movie.watched,
+        type: typeField.value,
+        genre: genreField.value,
+        year: Number(yearField.value),
+        actors: actorsField.value.split(',').map(a => a.trim()).filter(a => a.length > 0)
+    }));
+
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.className = 'secondary';
+    cancelButton.textContent = 'Annuler';
+    cancelButton.addEventListener('click', () => {
+        editingId = null;
+        renderMovies(lastMovies);
+    });
+
+    row.append(titleField, barcodeField, typeField, genreField, yearField, actorsField, saveButton, cancelButton);
+    return row;
+}
+
 function renderMovies(movies) {
+    lastMovies = movies;
     movieList.innerHTML = '';
 
     if (movies.length === 0) {
@@ -70,54 +204,27 @@ function renderMovies(movies) {
     }
 
     for (const movie of movies) {
-        const row = document.createElement('div');
-        row.className = 'movie-row' + (movie.watched ? ' watched' : '');
-
-        const info = document.createElement('div');
-        info.className = 'movie-info';
-
-        const title = document.createElement('span');
-        title.className = 'movie-title';
-        title.textContent = movie.title;
-
-        const meta = document.createElement('span');
-        meta.className = 'movie-meta';
-        const metaParts = [TYPE_LABELS[movie.type] || movie.type, GENRE_LABELS[movie.genre] || movie.genre, movie.year];
-        meta.textContent = metaParts.join(' · ');
-
-        const barcode = document.createElement('span');
-        barcode.className = 'movie-barcode';
-        barcode.textContent = movie.barcode;
-
-        info.append(title, meta, barcode);
-
-        if (movie.actors && movie.actors.length > 0) {
-            const actors = document.createElement('span');
-            actors.className = 'movie-actors';
-            actors.textContent = 'Avec ' + movie.actors.join(', ');
-            info.appendChild(actors);
-        }
-
-        const watchedLabel = document.createElement('label');
-        watchedLabel.className = 'watched-toggle';
-        const watchedCheckbox = document.createElement('input');
-        watchedCheckbox.type = 'checkbox';
-        watchedCheckbox.checked = movie.watched;
-        watchedCheckbox.addEventListener('change', () => toggleWatched(movie, watchedCheckbox.checked));
-        const watchedText = document.createElement('span');
-        watchedText.textContent = 'Vu';
-        watchedLabel.append(watchedCheckbox, watchedText);
-
-        const deleteButton = document.createElement('button');
-        deleteButton.type = 'button';
-        deleteButton.className = 'row-delete';
-        deleteButton.setAttribute('aria-label', `Supprimer ${movie.title}`);
-        deleteButton.textContent = '✕';
-        deleteButton.addEventListener('click', () => deleteMovie(movie));
-
-        row.append(info, watchedLabel, deleteButton);
-        movieList.appendChild(row);
+        movieList.appendChild(movie.id === editingId ? buildEditRow(movie) : buildDisplayRow(movie));
     }
+}
+
+async function saveEdit(id, body) {
+    const response = await fetch(`/api/movies/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...csrfHeaders() },
+        body: JSON.stringify(body)
+    });
+    if (response.status === 409) {
+        showStatus('Ce code-barre existe déjà dans la collection.', true);
+        return;
+    }
+    if (!response.ok) {
+        showStatus('Impossible de mettre à jour ce film.', true);
+        return;
+    }
+    editingId = null;
+    showStatus(`« ${body.title} » mis à jour.`, false);
+    await loadMovies(currentFilters());
 }
 
 async function loadMovies(filters) {

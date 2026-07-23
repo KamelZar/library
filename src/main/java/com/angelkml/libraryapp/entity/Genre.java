@@ -1,6 +1,7 @@
 package com.angelkml.libraryapp.entity;
 
 public enum Genre {
+    NON_CLASSE,
     COMEDIE,
     DRAME,
     ACTION,
