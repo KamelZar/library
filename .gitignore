@@ -1,0 +1,21 @@
+target/
+*.log
+
+# H2 database files
+data/
+*.mv.db
+*.trace.db
+
+# secrets
+.env
+
+# collection perso : gardée privée, pas de raison qu'un repo public liste mes Blu-ray
+src/main/java/com/angelkml/libraryapp/importer/
+src/main/resources/import/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+*.iml
