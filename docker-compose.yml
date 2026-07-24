@@ -1,11 +1,21 @@
-version: "3.8"
 services:
+  tailscale-library:
+    image: tailscale/tailscale:latest
+    hostname: library
+    environment:
+      TS_AUTHKEY: ${TS_AUTHKEY}
+      TS_STATE_DIR: /var/lib/tailscale
+    volumes:
+      - tailscale-library-state:/var/lib/tailscale
+    restart: unless-stopped
+
   libraryapp:
     build: .
     image: libraryapp:latest
     restart: unless-stopped
-    ports:
-      - "8081:8080"
+    network_mode: service:tailscale-library
+    depends_on:
+      - tailscale-library
     environment:
       ADMIN_USERNAME: ${ADMIN_USERNAME}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
@@ -14,3 +24,4 @@ services:
 
 volumes:
   libraryapp-data:
+  tailscale-library-state:
